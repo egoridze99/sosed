@@ -82,14 +82,14 @@ router.post('/dashboard/addTransaction', (req, res) => {
                 if (user.free % 1 !== 0) {
                     user.free = 14 + user.free - Number(transaction.litres);
                     transaction.litres = Number(transaction.litres) + 0.5;
-                    getFree = true;
+                    transaction.getFree = true;
                 } else {
                     user.free = 14 + user.free - Number(transaction.litres);
-                    getFree = true;
+                    transaction.getFree = true;
                 }
             } else {
                 user.free -= Number(transaction.litres);
-                getFree = false;
+                transaction.getFree = false;
             };
 
             const transactions = [...user.transactions, transaction];
@@ -98,10 +98,7 @@ router.post('/dashboard/addTransaction', (req, res) => {
             user.save()
                 .then(() => console.log('Информация о пользователе обновлена'))
                 .then(() => {
-                    res.send(JSON.stringify({
-                        user,
-                        getFree
-                    }));
+                    res.send(JSON.stringify(user));
                 })
                 .catch(err => console.error(err));
         })

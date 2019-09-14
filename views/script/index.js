@@ -9,7 +9,7 @@ function drawTransactions(transactions) {
     row.className = 'row border-bottom';
 
     const colName = document.createElement('div');
-    colName.className = 'col-md-3';
+    colName.className = 'col-md-2';
     const pName = document.createElement('p');
     pName.className = 'mt-3 black';
     pName.textContent = item.saler.name + ' ' + item.saler.surname;
@@ -17,7 +17,7 @@ function drawTransactions(transactions) {
     row.appendChild(colName);
 
     const colDate = document.createElement('div');
-    colDate.className = 'col-md-3';
+    colDate.className = 'col-md-2';
     const pDate = document.createElement('p');
     pDate.className = 'mt-3 black';
     pDate.textContent = item.date;
@@ -25,7 +25,7 @@ function drawTransactions(transactions) {
     row.appendChild(colDate);
 
     const colLitres = document.createElement('div');
-    colLitres.className = 'col-md-3';
+    colLitres.className = 'col-md-2';
     const pLitres = document.createElement('p');
     pLitres.className = 'mt-3 black';
     pLitres.textContent = item.litres;
@@ -33,12 +33,20 @@ function drawTransactions(transactions) {
     row.appendChild(colLitres);
 
     const colSum = document.createElement('div');
-    colSum.className = 'col-md-3';
+    colSum.className = 'col-md-2';
     const pSum = document.createElement('p');
     pSum.className = 'mt-3 black';
     pSum.textContent = item.totalSum;
     colSum.appendChild(pSum);
     row.appendChild(colSum);
+
+    const colFree = document.createElement('div');
+    colFree.className = 'col-md-2';
+    const pFree = document.createElement('p');
+    pFree.className = 'mt-3 black';
+    pFree.textContent = item.getFree === true ? 'Да' : 'Нет';
+    colFree.appendChild(pFree);
+    row.appendChild(colFree);
 
     forRender.push(row);
   });
@@ -171,14 +179,16 @@ document.querySelector('#addTransaction')
     fetch(url, options)
       .then(res => res.json())
       .then(user => {
-        userTotal.textContent = user.user.total; // Показать сколько денег всего израсходовал
-        userToFree.textContent = user.user.free;
+        userTotal.textContent = user.total; // Показать сколько денег всего израсходовал
+        userToFree.textContent = user.free;
 
-        if (user.getFree === true) {
+        console
+
+        if (user.transactions[user.transactions.length-1].getFree === true) {
           $('#getFreeModal').modal('toggle'); 
         }
 
-        drawTransactions(user.user.transactions);
+        drawTransactions(user.transactions);
       })
       .catch(err => console.error(err))
   });
