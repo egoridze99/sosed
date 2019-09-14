@@ -1,0 +1,26 @@
+const mongoose = require('mongoose');
+
+const BuyerSchema = mongoose.Schema({
+    _id: mongoose.Schema.Types.ObjectId,
+    telefoneNumber : String,
+    buyer : {
+        name : String,
+        surname : String
+    },
+    transactions : {
+        type: Array,
+        default: []
+    },
+    total : {
+        type : Number,
+        default : 0
+    },
+    free : {
+        type : Number,
+        default : 14
+    }
+});
+
+const Buyer = mongoose.model('Buyer', BuyerSchema);
+
+module.exports = Buyer;
