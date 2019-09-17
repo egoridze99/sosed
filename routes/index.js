@@ -1,8 +1,10 @@
 const router = require('express').Router();
 const bodyParser = require('body-parser');
-const Buyer = require('../models/Buyer');
 const mongoose = require('mongoose');
 const {forwardAuthenticated ,ensureAuthenticated} = require('../config/auth');
+
+const Buyer = require('../models/Buyer');
+const Telefone = require('../models/Telefone');
 
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(bodyParser.json());
@@ -47,6 +49,14 @@ router.post('/dashboard/newUser',  ensureAuthenticated, (req, res) => {
                         surname
                     },
                 });
+
+                const newTelefone = new Telefone({
+                    name,
+                    telefone
+                });
+
+                newTelefone.save()
+                    .catch(err => console.error(err));
 
                 newBuyer.save()
                     .then(() => console.log('Новый пользователь зарегестрирован'))
