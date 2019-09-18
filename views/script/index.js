@@ -75,20 +75,20 @@ document.querySelector("#myForm").addEventListener("submit", function(event) { /
 
   fetch(url, options)
     .then(res => res.json())
-    .then(user => {
-      if (user.error === 404) {
+    .then(userInfo => {
+      if (userInfo.error === 404) {
         $('#notFoundModal').modal('toggle') // Открыть модалку
       } else {
-        const {buyer, telefoneNumber, total, transactions, _v, _id, free} = user; // Деструктуризация объекта
+        const {user, transactions} = userInfo; // Деструктуризация объекта
         
-        document.querySelector("#userSpan").textContent = buyer.name + " " + buyer.surname; // Имя
-        document.querySelector("#userTelefone").textContent = telefoneNumber; // Номер
-        document.querySelector("#userTotal").textContent = total; // Общая сумма покупок
-        document.querySelector('#toFree').textContent = free; // Сколько до бесплатного
+        document.querySelector("#userSpan").textContent = user.buyer.name + " " + user.buyer.surname; // Имя
+        document.querySelector("#userTelefone").textContent = user.telefoneNumber; // Номер
+        document.querySelector("#userTotal").textContent = user.total; // Общая сумма покупок
+        document.querySelector('#toFree').textContent = user.free; // Сколько до бесплатного
 
         const litresBlock = document.querySelector('#telefone-number'); // Открыть блок
-        litresBlock.dataset.telefoneNumber = telefoneNumber;
-        litresBlock.dataset.userId = _id;
+        litresBlock.dataset.telefoneNumber = user.telefoneNumber;
+        litresBlock.dataset.userId = user._id;
         litresBlock.style.display = 'block';
 
         drawTransactions(transactions);
@@ -178,17 +178,16 @@ document.querySelector('#addTransaction')
 
     fetch(url, options)
       .then(res => res.json())
-      .then(user => {
+      .then(userInfo => {
+        const {user, transactions} = userInfo;
         userTotal.textContent = user.total; // Показать сколько денег всего израсходовал
         userToFree.textContent = user.free;
 
-        console
-
-        if (user.transactions[user.transactions.length-1].getFree === true) {
+        if (transactions[transactions.length-1].getFree === true) {
           $('#getFreeModal').modal('toggle'); 
         }
 
-        drawTransactions(user.transactions);
+        drawTransactions(transactions);
       })
       .catch(err => console.error(err))
   });

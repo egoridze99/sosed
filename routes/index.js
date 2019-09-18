@@ -5,6 +5,7 @@ const {forwardAuthenticated ,ensureAuthenticated} = require('../config/auth');
 
 const Buyer = require('../models/Buyer');
 const Telefone = require('../models/Telefone');
+const Transaction = require('../models/Transaction');
 
 router.use(bodyParser.urlencoded({extended:true}));
 router.use(bodyParser.json());
@@ -27,7 +28,8 @@ router.post('/dashboard/getUser',  ensureAuthenticated, (req, res) => {
             if (!user) {
                 res.send(JSON.stringify({error : 404}))
             } else {
-                res.send(JSON.stringify(user));
+                Transaction.find({telefone : number}, null, null)
+                    .then(transactions => res.send(JSON.stringify({user, transactions})));
             };
         })
 })
@@ -67,7 +69,6 @@ router.post('/dashboard/newUser',  ensureAuthenticated, (req, res) => {
                             telefone,
                             total : 0,
                             _id,
-                            transactions : [],
                             free : 14 
                         }));
                     })
@@ -84,6 +85,8 @@ router.post('/dashboard/addTransaction', (req, res) => {
         name : req.user.name.firstName,
         surname : req.user.name.lastName
     };
+
+    console.log(transaction);
 
     Buyer.findById(userId)
         .then(user => {
@@ -102,13 +105,26 @@ router.post('/dashboard/addTransaction', (req, res) => {
                 transaction.getFree = false;
             };
 
-            const transactions = [...user.transactions, transaction];
-            user.transactions = transactions;
+            const newTransaction = new Transaction({
+                litres : transaction.litres,
+                totalSum : transaction.totalSum,
+                saler : transaction.saler,
+                dateString : transaction.date,
+                date : new Date(),
+                getFree : transaction.getFree,
+                telefone : user.telefoneNumber
+            })
 
             user.save()
                 .then(() => console.log('Информация о пользователе обновлена'))
                 .then(() => {
-                    res.send(JSON.stringify(user));
+                    newTransaction.save()
+                        .then(() => {
+                            Transaction.find({telefone : user.telefoneNumber}, null, null)
+                                .then(transact => res.send(JSON.stringify({user, transactions : transact})))
+                                .catch(err => console.err(err))
+                        })
+                        .catch(err => error);
                 })
                 .catch(err => console.error(err));
         })

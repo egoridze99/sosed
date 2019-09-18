@@ -7,10 +7,6 @@ const BuyerSchema = mongoose.Schema({
         name : String,
         surname : String
     },
-    transactions : {
-        type: Array,
-        default: []
-    },
     total : {
         type : Number,
         default : 0
