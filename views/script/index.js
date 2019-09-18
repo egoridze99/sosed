@@ -20,7 +20,7 @@ function drawTransactions(transactions) {
     colDate.className = 'col-md-2';
     const pDate = document.createElement('p');
     pDate.className = 'mt-3 black';
-    pDate.textContent = item.date;
+    pDate.textContent = item.dateString;
     colDate.appendChild(pDate);
     row.appendChild(colDate);
 
