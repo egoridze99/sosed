@@ -14,6 +14,14 @@ const BuyerSchema = mongoose.Schema({
     free : {
         type : Number,
         default : 14
+    },
+    isPassword : {
+        type : Boolean,
+        default : false,
+    },
+    password : {
+        type : String,
+        default : ""
     }
 });
 
