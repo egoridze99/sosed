@@ -91,7 +91,7 @@ router.post('/dashboard/addTransaction', (req, res) => {
     Buyer.findById(userId)
         .then(user => {
             user.total = user.total + Number(transaction.totalSum);
-            if (user.free - Number(transaction.litres) <= 0) {
+            if (user.free - Number(transaction.litres) < 0) {
                 if (user.free % 1 !== 0) {
                     user.free = 14 + user.free - Number(transaction.litres);
                     transaction.litres = Number(transaction.litres) + 0.5;
@@ -100,6 +100,9 @@ router.post('/dashboard/addTransaction', (req, res) => {
                     user.free = 14 + user.free - Number(transaction.litres) + 1;
                     transaction.getFree = true;
                 }
+            } else if (user.free - Number(transaction.litres) === 0) {
+                user.free = 14;
+                transaction.getFree = true;
             } else {
                 user.free -= Number(transaction.litres);
                 transaction.getFree = false;
