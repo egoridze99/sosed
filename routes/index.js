@@ -97,7 +97,7 @@ router.post('/dashboard/addTransaction', (req, res) => {
                     transaction.litres = Number(transaction.litres) + 0.5;
                     transaction.getFree = true;
                 } else {
-                    user.free = 14 + user.free - Number(transaction.litres);
+                    user.free = 14 + user.free - Number(transaction.litres) + 1;
                     transaction.getFree = true;
                 }
             } else {
